@@ -1,0 +1,40 @@
+#app {
+    display: flex;
+    text-align: center;
+    flex-flow: column;
+    height: 100vh;
+}
+#app h1{
+    margin-top:20vh;
+    font-size: 5vh;
+}
+
+.ui-input input {
+    border: 2px solid #f15fa6;
+    box-shadow: 5px 5px 10px #959595;
+    height: 3vh;
+    width: 60vw;
+    font-size: 2vh;
+}
+.ui-input input::placeholder {
+    color:#999999
+}
+.ui-list  {
+    font-size: 35px;
+}
+.ui-list li {
+    border: 2px solid #EEEEEE;
+    margin-top: 15px;
+    display: flex;
+}
+.ui-list span {
+    flex: 1;
+    cursor: pointer;
+}
+.ui-list span:first-of-type {
+    color: green;
+}
+.ui-list span:last-of-type {
+   color:red;
+}
+
