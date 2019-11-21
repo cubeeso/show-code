@@ -8,13 +8,32 @@
     margin-top:20vh;
     font-size: 5vh;
 }
+#app h2{
+    display: flex;
+    justify-content: space-between;
+    color: gray;
+}
 
+.ui-toast{
+    position: fixed;
+    top: 10vh;
+    width: 50%;
+    left: 25vw;
+    height: 4vh;
+    color: white;
+    line-height: 4vh;
+    background: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    font-size: 2vh;
+}
 .ui-input input {
     border: 2px solid #f15fa6;
     box-shadow: 5px 5px 10px #959595;
-    height: 3vh;
+    height: 4vh;
     width: 60vw;
     font-size: 2vh;
+    border-radius: 10px;
+    text-align: center;
 }
 .ui-input input::placeholder {
     color:#999999
@@ -37,4 +56,10 @@
 .ui-list span:last-of-type {
    color:red;
 }
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
 
