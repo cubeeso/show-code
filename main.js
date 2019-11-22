@@ -2,11 +2,18 @@ import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.esm.browser.js
 import Storage from "./router/storage.js"
 //基础输入组件
 const BaseInput = {
-    template: `<div class="ui-input" ><input placeholder="请输入" v-model="it" @keyup.enter="$emit('put-event',it,$event.target)" /></div>`,
+    template: `<div class="ui-input" ><input placeholder="请输入" v-focus  v-model="it" @keyup.enter="$emit('put-event',it,$event.target)" /></div>`,
     data() {
         return {
             it: "",
         };
+    },
+    directives:{
+        focus:{
+            inserted(el){
+                el.focus(); //等同于autofocus 在苹果浏览器是无效
+            }
+        }
     }
 };
 //基础list组件
@@ -16,11 +23,12 @@ const BaseList = {
              </ol> </div >`,
     props: ["items"]
 };
+//混入的钩子函数
 const mix = {
     mounted() {
         window.addEventListener('beforeunload', (e) => {
             Storage.setCache(this.items);
-            console.log("存储数据");
+            this.showToast("数据已缓存");
         });
     }
 };
@@ -51,7 +59,8 @@ const App = {
         showToast(msg) {
             this.conf.msg = msg;
             this.conf.isShow = true; //打开提示窗
-            setTimeout(() => {
+            clearTimeout(this.$data.t);
+            this.$data.t = setTimeout(() => {
                 this.conf.isShow = false; //关闭提示窗
             }, 2000);
         },
@@ -61,6 +70,10 @@ const App = {
         },
         put(item, _this) {
             _this.value = "";
+            if(this.items.includes(item)){
+                this.showToast("数据已经存在");
+                return;
+            }
             this.items.push(item);
             this.showToast("添加成功");
         },
@@ -70,25 +83,27 @@ const App = {
         },
         removeAll() {
             if (this.items.length == 0) {
-                this.showToast("缓存为空");
+                this.showToast("没有数据");
                 return;
             }
             this.items = [];
-            this.showToast("清空成功");
+            this.showToast("清空缓存成功");
         },
         copyAll() {
             if (this.items.length == 0) {
-                this.showToast("数据已经为空");
+                this.showToast("没有数据");
+                return;
+            }
+            if (this.items.length > 2000) {
+                this.showToast("缓存数据过大,无法复制");
                 return;
             }
             this.items = [...this.items, ...this.items];
-            this.showToast("复制成功");
+            this.showToast("复制缓存成功");
         }
     },
     watch: {
-        items: function (val, oldval) {
-            // 
-        }
+        
     },
     components: {
         BaseList,
