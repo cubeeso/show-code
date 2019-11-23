@@ -1,12 +1,11 @@
-const keyname = "inputlist";
 export default {
-    setCache(items) {
-        window.sessionStorage.setItem(keyname, JSON.stringify(items || []));
+    setCache(key,items) {
+        window.sessionStorage.setItem(key, JSON.stringify(items));
     },
-    getCache() {
-        return JSON.parse(window.sessionStorage.getItem(keyname) || "[]");
+    getCache(key) {
+        return JSON.parse(window.sessionStorage.getItem(key));
     },
-    removeCache() {
-        window.sessionStorage.removeItem(keyname);
+    removeCache(key) {
+        window.sessionStorage.removeItem(key);
     }
 }
