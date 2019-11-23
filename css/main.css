@@ -1,34 +1,130 @@
 #app {
     display: flex;
-    text-align: center;
     flex-flow: column;
     height: 100vh;
-    background: url("../img/6395566594d2d761ba04f0c74fa4bd4b.jpg")  center/100%;
+    background: url("../img/6395566594d2d761ba04f0c74fa4bd4b.jpg") center/100%;
 }
-#app h1{
-    margin-top:20vh;
+
+#app .head {
+    height: 3vh;
+    background: url("../img/cf620101eaf0e63e0973a6cfc52228f9.jpg") center/100%;
+    box-shadow: 0px 4px 10px 0 #EEEEEE;
+    border-bottom: 1px solid #EEEEEE;
+    border-radius: 4px;
+}
+
+#app .foot {
+    height: 5vh;
+    background: url("../img/cf620101eaf0e63e0973a6cfc52228f9.jpg") center/100%;
+    box-shadow: 0px 4px 10px 0 #EEEEEE;
+    border-top: 1px solid #EEEEEE;
+    border-radius: 4px;
+}
+
+#app .content {
+    flex: 1;
+    overflow: scroll;
+}
+
+#app h1 {
+    margin-top: 10vh;
     font-size: 5vh;
+    text-align: center;
 }
-#app h2{
+
+#app h2 {
     display: flex;
     justify-content: space-between;
     color: gray;
 }
 
-.ui-toast{
+.ui-icon {
+    height: 3vh;
+    width: 3vh;
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.ui-icon-more {
+    background: url("../img/icon/gengduo.png") no-repeat center/100%;
+}
+.ui-icon-menu {
+    background: url("../img/icon/shouye.png") no-repeat center/100%;
+}
+
+.ui-icon-copy {
+    background: url("../img/icon/fuzhi.png") no-repeat center/100%;
+}
+
+.ui-icon-del {
+    background: url("../img/icon/shanchu.png") no-repeat center/100%;
+}
+.ui-tips{
+    text-align: center;
+}
+span {
+    cursor: pointer;
+}
+.ui-toast {
     position: fixed;
     top: 10vh;
-    width: 50%;
-    left: 25vw;
-    height: 4vh;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    width: 30vw;
+    height: 3vh;
     color: white;
-    line-height: 4vh;
-    background: rgba(0,0,0,0.6);
-    border-radius: 10px;
-    font-size: 2vh;
+    line-height: 3vh;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    font-size: 20px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
 }
+.ui-bar{
+    display: flex;
+    justify-content: space-between;
+}
+/*  */
+.ui-box {
+    position: fixed;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 5px 5px 10px 0 #888888;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-around;
+}
+.ui-alert {
+    width: 300px;
+    height: 150px;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    margin: auto;
+    flex-flow: column;
+    
+}
+.ui-buble{
+    width: 200px;
+    height: 100px;
+    right: 3vw;
+    top:5vh;
+    flex-flow: row;
+    align-items: center;
+}
+.ui-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .ui-input input {
-    border: 2px solid #f15fa6;
+    border: 2px solid #333333;
     box-shadow: 5px 5px 10px #959595;
     height: 4vh;
     width: 60vw;
@@ -36,37 +132,65 @@
     border-radius: 10px;
     text-align: center;
 }
+
 .ui-input input::placeholder {
-    color:#999999
+    color: #999999
 }
-.ui-list  {
+
+.ui-list {
+    margin-top: 2vh;
     font-size: 35px;
 }
-.ui-list li {
-    border: 2px solid #EEEEEE;
+
+.ui-list p {
+    border-bottom: 1px solid #EEEEEE;
     margin-top: 15px;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.ui-list span {
-    flex: 1;
-}
-span{
-    cursor: pointer;
-}
-.ui-list span:first-of-type {
-    color: green;
-}
-.ui-list span:last-of-type {
-   color:red;
-}
-.fade-enter-active, .fade-leave-active {
+
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity 1s;
     -webkit-transition: opacity 1s;
     -moz-transition: opacity 1s;
     -ms-transition: opacity 1s;
     -o-transition: opacity 1s;
 }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
-  }
 
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active below version 2.1.8 */
+    {
+    opacity: 0;
+}
+
+.show-enter-active {
+    animation: box-ani .3s;
+    -webkit-animation: box-ani .3s;
+}
+
+.show-leave-active {
+    animation: box-ani .3s reverse;
+    -webkit-animation: box-ani .3s reverse;
+}
+
+@keyframes box-ani {
+    from {
+        transform: scale(0);
+        -webkit-transform: scale(0);
+        -moz-transform: scale(0);
+        -ms-transform: scale(0);
+        -o-transform: scale(0);
+    }
+
+    to {
+        transform: (1);
+        -webkit-transform: (1);
+        -moz-transform: (1);
+        -ms-transform: (1);
+        -o-transform: (1);
+    }
+}
