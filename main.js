@@ -10,20 +10,25 @@ import {
 //混入的钩子函数
 const mix = {
     created() {
-        setTimeout(()=>{
-            if(this.isLogin){
-                this.isLogin = false; //自动回话过期
-                this.showAlert("会话过期");
-                Storage.setCache("isLogin",this.isLogin);
-            }
-        },10000);
+       // this.destroySession();
     },
-    mounted() {
-        window.addEventListener('beforeunload', (e) => {
-            Storage.setCache("dataList",this.items);
-            Storage.setCache("isLogin",this.isLogin);
+    mounted() { //虚拟模板渲染挂载成功后执行
+        window.addEventListener('beforeunload', (e) => {//监听页面刷新
+            Storage.setCache("dataList", this.items);
+            Storage.setCache("isLogin", this.isLogin);
         });
-    }
+    },
+    methods: {
+        destroySession() {
+            if (this.isLogin) {
+                setTimeout(() => {
+                    this.isLogin = false; //自动回话过期
+                    this.showAlert("会话过期");
+                    Storage.setCache("isLogin", this.isLogin);
+                }, 30000);//30秒会话过期
+             }
+        }
+    },
 };
 
 //主App
@@ -31,7 +36,7 @@ const App = {
     template: /*html*/ `
         <div id="app" >
             <div class="head">
-                <TitleBar ></TitleBar>
+                <TitleBar :isLogin="isLogin"></TitleBar>
                 <Tips ref="tips" v-on="{'copyall-event':copyAll,'removeall-event':removeAll}"></Tips>
             </div>
             <div class="content ui-home" v-show="!isLogin">
@@ -51,7 +56,7 @@ const App = {
     data() {
         return {
             items: Storage.getCache("dataList") || [],
-            isLogin:Storage.getCache("isLogin") ||false
+            isLogin: Storage.getCache("isLogin") || false
         }
     },
     methods: {

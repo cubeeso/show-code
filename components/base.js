@@ -29,19 +29,71 @@ const BaseList = {
          </div >`,
     props: ["items"]
 };
+//菜单框
+const MenuBox = {
+    template: /*html*/ `
+        <div>
+        <div class="ui-boxbg" v-show="isShow"  @click = "$emit('show-menu')" > </div>
+        <transition name="slide">
+             <div class="ui-menubox" v-show="isShow">
+                  <p class="ui-menu" v-for="(it,i) in menuData" :key="i" @click="toPage(i)">{{it.menuName}}</p>
+             </div>
+        </transition>
+        </div>
+    `,
+    props:["isShow"],
+    data(){
+        return {
+            isShowMenu:false,
+            menuData:[{
+                id:"0",
+                "menuName":"测试菜单"
+            },{
+                id:"1",
+                "menuName":"测试菜单2"
+            },{
+                id:"2",
+                "menuName":"测试菜单3"
+            },{
+                id:"3",
+                "menuName":"测试菜单4"
+            },],
+        }
+    },
+    methods:{
+        toPage(i){
+            //this.$parent.showAlert(this.menuData[i].menuName);
+        }
+    }
+};
 //标题栏
 const TitleBar = {
     template:/*html*/`
-        <div class="ui-bar">
-             <span title="菜单" class="ui-icon ui-icon-menu"></span>
-             <span title="更多" class="ui-icon ui-icon-more" @click="showBuble" ></span>
+        <div>
+            <div class="ui-bar">
+                <span title="菜单" class="ui-icon ui-icon-menu" @click="showMenu"  v-show="isLogin"></span>
+                <span title="更多" class="ui-icon ui-icon-more" @click="showBuble" v-show="isLogin" ></span>
+            </div>
+            <MenuBox :isShow = "isShowMenu" @show-menu="showMenu" ></MenuBox>
         </div>
     `,
+    props:["isLogin"],
+    data(){
+        return{
+            isShowMenu:false
+        }
+    },
     methods: {
        showBuble(){//打开气泡
-             this.$root.$children[0].$refs.tips.isBub = !this.$root.$children[0].$refs.tips.isBub;
+             this.$root.$children[0].$refs.tips.isBub = !this.$root.$children[0].$refs.tips.isBub;//不推荐使用,使用vuex或者中央事件总线
+       },
+       showMenu(){
+            this.isShowMenu = !this.isShowMenu;
        }
     },
+    components:{
+        MenuBox
+    }
 };
 //提示组件
 const Tips = {
@@ -53,8 +105,8 @@ const Tips = {
             <div class="ui-boxbg" v-show="isAlert||isBub"  @click = "closeBub" > </div>
             <transition name="show">
                 <div class="ui-box ui-alert" v-show="isAlert" >
-                <p>{{Bmsg}}</p>
-                <p><button autofocus @click="closeAlert" @keyup.enter="closeAlert">确定</button></p>       
+                <p class="ui-msg">{{Bmsg}}</p>
+                <p><button autofocus class="ui-button-ok"  @click="closeAlert" @keyup.enter="closeAlert">确定</button></p>       
                 </div>
             </transition>
             <transition name="show">
@@ -78,7 +130,8 @@ const Tips = {
         closeAlert(){
             this.isAlert = false;
             if(this.Bmsg=="登陆成功"){
-                this.$parent.isLogin=true;
+                this.$parent.isLogin=true;//不推荐用法  逆向修改父组件属性 造成维护困难
+                //this.$parent.destroySession();
             }
         },
         closeBub(){
@@ -86,6 +139,7 @@ const Tips = {
         }
     },
 };
+
 //登陆框
 const LoginBox = {
     template:/*html*/`

@@ -37,6 +37,20 @@
     justify-content: space-between;
     color: gray;
 }
+.ui-menubox{
+    width: 300px;
+    height: 100vh;
+    background: url("../img/f4daa7d009919a7a66e3ad3b47d57723.jpeg") center/100vh;
+    position: fixed;
+    top:0;
+    padding-top: 10vh;
+    opacity: 0.95;
+}
+.ui-menubox .ui-menu{
+    text-align: center;
+    font-size: 35px;
+    border-bottom: 1px solid #EEEEEE;
+}
 
 .ui-icon {
     height: 3vh;
@@ -49,8 +63,8 @@
     width: 500px;
     background: url(../img/timg.gif) no-repeat center/100%;
     position: fixed;
-    bottom: 0px;
-    right: 0px;
+    bottom: -100px;
+    right: -25px;
 }
 .ui-icon-more {
     background: url("../img/icon/gengduo.png") no-repeat center/100%;
@@ -78,13 +92,13 @@ span {
     left: 0px;
     right: 0px;
     margin: auto;
-    width: 30vw;
-    height: 3vh;
+    width: 400px;
+    height: 60px;
     color: white;
-    line-height: 3vh;
+    line-height: 60px;
+    font-size: 35px;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
-    font-size: 20px;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
@@ -111,15 +125,17 @@ span {
     height: 100vh;
 }
 .ui-alert {
-    width: 300px;
-    height: 150px;
+    width: 400px;
+    height: 200px;
     top: 0px;
     left: 0px;
     bottom: 0px;
     right: 0px;
     margin: auto;
     flex-flow: column;
-    
+}
+.ui-msg{
+    font-size: 35px;
 }
 .ui-buble{
     width: 200px;
@@ -139,8 +155,8 @@ span {
 .ui-input input {
     border: 2px solid #333333;
     box-shadow: 5px 5px 10px #959595;
-    height: 4vh;
-    width: 60vw;
+    height: 80px;
+    width: 600px;
     font-size: 2vh;
     border-radius: 10px;
     text-align: center;
@@ -150,17 +166,27 @@ span {
 .ui-input input::placeholder {
     color: #999999
 }
-.ui-button{
-    width: 100px;
-    height: 50px;
-    margin-top: 5vh;
-    font-size: 30px;
+button{
     border: 1px solid #666666;
     background: #EEEEEE;
     border-radius: 7px;
-    line-height: 50px;
     cursor: pointer;
+    font-weight: 600;
 }
+.ui-button{
+    width: 200px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 40px;
+    margin-top: 5vh;
+}
+.ui-button-ok{
+    width: 150px;
+    height: 50px;
+    line-height: 50px;
+    font-size: 30px;
+}
+
 
 .ui-list {
     margin-top: 2vh;
@@ -201,7 +227,6 @@ span {
     animation: box-ani .3s reverse;
     -webkit-animation: box-ani .3s reverse;
 }
-
 @keyframes box-ani {
     from {
         transform: scale(0);
@@ -219,3 +244,29 @@ span {
         -o-transform: (1);
     }
 }
+.slide-enter-active {
+    animation: slide-ani .5s;
+    -webkit-animation: slide-ani .5s;
+}
+.slide-leave-active {
+    animation: slide-ani .5s reverse;
+    -webkit-animation: slide-ani .5s reverse;
+}
+@keyframes slide-ani {
+    from {
+        transform: translateX(-300px);
+        -webkit-transform: translateX(-300px);
+        -moz-transform: translateX(-300px);
+        -ms-transform: translateX(-300px);
+        -o-transform: translateX(-300px);
+}
+
+    to {
+        transform: translateX(0px);
+        -webkit-transform: translateX(0px);
+        -moz-transform: translateX(0px);
+        -ms-transform: translateX(0px);
+        -o-transform: translateX(0px);
+}
+}
+
