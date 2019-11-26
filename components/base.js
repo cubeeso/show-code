@@ -3,19 +3,12 @@ import Store from "../stateManage/Store.js";
 const BaseInput = {
     template: /*html*/ `
       <div class="ui-input" >
-            <input placeholder="请输入" v-focus  v-model="it" @keyup.enter="put" />
+            <input placeholder="请输入" autofocus  v-model="it" @keyup.enter="put" />
     </div>`,
     data() {
         return {
             it: "",
         };
-    },
-    directives: {
-        focus: {
-            inserted(el) {
-                el.focus(); //等同于autofocus    可兼容苹果浏览器是无效
-            }
-        }
     },
     computed: {
         items:()=>Store.state.items
@@ -23,7 +16,7 @@ const BaseInput = {
     methods:{
         put(el){
             if (Store.state.items.includes(this.it)) {
-                Store.showToast("数据已经存在");
+                Store.showAlert("数据已经存在");
                 return;
             }
             el.target.value="";
@@ -71,19 +64,33 @@ const DemoBox = {
         BaseList
     }
 };
+const routes = {
+    "/":DemoBox,
+};
+const router = {
+    el:"#content",
+    data:{
+        path:window.location.pathname
+    },
+    computed: {
+        toPath(){
+            return routes[this.path]||NotFound
+        }
+    },
+    render:(h)=>h(this.toPath)
+}
 //菜单框
 const MenuBox = {
     template: /*html*/ `
         <div>
-        <div class="ui-boxbg" v-show="isShowMenu"  @click = "$emit('show-menu')" > </div>
+           <div class="ui-boxbg" v-show="isMenuShow"  @click = "closeMenu" > </div>
         <transition name="slide">
-             <div class="ui-menubox" v-show="isShowMenu">
+             <div class="ui-menubox" v-show="isMenuShow">
                   <p class="ui-menu" v-for="(it,i) in menuData" :key="i" @click="toPage(i)">{{it.menuName}}</p>
              </div>
         </transition>
         </div>
     `,
-    props:["isShowMenu"],
     data(){
         return {
             menuData:[{
@@ -101,7 +108,15 @@ const MenuBox = {
             },],
         }
     },
+    computed: {
+        isMenuShow(){
+            return Store.state.isMenuShow
+        }
+    },
     methods:{
+        closeMenu(){
+            Store.switchMenu(false);
+        },
         toPage(i){
             //this.$parent.showAlert(this.menuData[i].menuName);
         }
@@ -112,24 +127,20 @@ const TitleBar = {
     template:/*html*/`
         <div>
             <div class="ui-bar">
+                 <span title="信号" class="ui-icon ui-icon-wifi" ></span>
                 <span title="菜单" class="ui-icon ui-icon-menu" @click="showMenu"  v-show="isLogin"></span>
                 <span title="更多" class="ui-icon ui-icon-more" @click="showBuble" v-show="isLogin" ></span>
             </div>
-            <MenuBox :isShowMenu = "isShowMenu" @show-menu="showMenu" ></MenuBox>
+            <MenuBox></MenuBox>
         </div>
     `,
     props:["isLogin"],
-    data(){
-        return{
-            isShowMenu:false
-        }
-    },
     methods: {
        showBuble(){//打开气泡
              Store.showBuble();
        },
        showMenu(){
-            this.isShowMenu = !this.isShowMenu;
+            Store.switchMenu();
        }
     },
     components:{
@@ -143,17 +154,18 @@ const Tips = {
             <transition name="fade">
              <div class="ui-toast" v-show="isToast" >{{toastMsg}}</div>
             </transition>
-            <div class="ui-boxbg" v-show="isAlert||isBub"  @click = "closeBuble" > </div>
+            <div class="ui-boxbg" v-show="isAlert"  > </div>
             <transition name="show">
                 <div class="ui-box ui-alert" v-show="isAlert" >
                 <p class="ui-msg">{{alertMsg}}</p>
-                <p><button autofocus class="ui-button-ok"  @click="closeAlert" @keyup.enter="closeAlert">确定</button></p>       
+                <p><button v-focus class="ui-button-ok"  @click="closeAlert" @keyup.enter="closeAlert">确定</button></p>       
                 </div>
             </transition>
             <transition name="show">
                 <div class="ui-box ui-buble" v-show="isBub" >
                     <span title="复制缓存" class="ui-icon ui-icon-copy" @click="copyAll"></span>
                     <span title="清空缓存" class="ui-icon ui-icon-del"  @click="removeAll"></span>
+                    <span title="注销" class="ui-icon ui-icon-cancel"  @click="loginCancel"></span>
                 </div>
             </transition>
         </div>`,
@@ -164,6 +176,13 @@ const Tips = {
         isBub:()=>Store.state.isBub,
         toastMsg:()=>Store.state.toastMsg,
         alertMsg:()=>Store.state.alertMsg,
+    },
+    directives: {
+        focus: {
+            update(el) {
+                el.focus(); //等同于autofocus    可兼容苹果浏览器是无效
+            }
+        }
     },
     methods: {
         copyAll(){
@@ -176,6 +195,7 @@ const Tips = {
                 return;
             }
             Store.copyAllItem();
+            Store.closeBuble();
             Store.showAlert("复制缓存成功");
         },
         removeAll(){
@@ -184,17 +204,19 @@ const Tips = {
                 return;
             }
             Store.removeAllItem();
+            Store.closeBuble();
             Store.showAlert("清空缓存成功");
         },
         closeAlert(){
             if(this.alertMsg=="登陆成功"){
-                Store.setLoginAction(true);
-                //this.$parent.destroySession();
+                Store.setLoginAction(true);//更改登录状态
             }
             Store.closeAlert();
         },
-        closeBuble(){
+        loginCancel(){
             Store.closeBuble();
+            Store.switchMenu(false);
+            Store.setLoginAction(false);//更改登录状态
         }
     },
 };
@@ -203,25 +225,48 @@ const Tips = {
 const LoginBox = {
     template:/*html*/`
         <div class="ui-input">
-            <slot></slot>
+            <slot v-if="!isRegist"></slot>
+            <h1 v-show="isRegist">闯入次元</h1>
             <input type="text" autofocus placeholder="用户名" v-model="username"/>
             <input type="password" placeholder="密码" v-model="password" @keyup.enter="checkAuth"/>
-            <button class="ui-button" @click="checkAuth">登陆</button>
+            <input type="password" placeholder="确认密码" v-show="isRegist" v-model="repassword" @keyup.enter="checkAuth"/>
+            <div >
+                <button class="ui-button" v-show="!isRegist" @click="checkAuth">登陆</button>
+                <button class="ui-button" @click="isRegist?regist():isRegist=true">注册</button>
+            </div>
+           
         </div>
     `,
     data(){
         return {
             username:"",
-            password:""
+            password:"",
+            isRegist:false,
+            repassword:"",
         }
     },
     methods: {
         checkAuth(){
-            if(this.username==="admin"&&this.password==="admin"){
+            if(this.isRegist){
+                return;
+            }
+            if(Store.state.userData.includes(this.username+"|"+this.password)){
                 Store.showAlert("登陆成功");
             }else{
                 Store.showAlert("用户名密码错误");
             }
+        },
+        regist(){
+            if(!this.username||!this.password||!this.repassword){
+                Store.showToast("用户名密码不能为空");
+            }else if(this.password!==this.repassword){
+                Store.showToast("两次密码不相同");
+            }else{
+                Store.addUser(this.username+"|"+this.password);
+                Store.showAlert("注册成功!");
+                this.isRegist = false;
+            }
+            
         }
     },
 };

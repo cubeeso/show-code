@@ -7,5 +7,11 @@ export default {
     },
     removeCache(key) {
         window.sessionStorage.removeItem(key);
-    }
+    },
+    setData(key,items) {
+        window.localStorage.setItem(key, JSON.stringify(items));
+    },
+    getData(key) {
+        return JSON.parse(window.localStorage.getItem(key));
+    },
 }

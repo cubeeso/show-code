@@ -69,6 +69,9 @@
 .ui-icon-more {
     background: url("../img/icon/gengduo.png") no-repeat center/100%;
 }
+.ui-icon-wifi{
+    background: url("../img/icon/WIFI.png") no-repeat center/100%;
+}
 .ui-icon-menu {
     background: url("../img/icon/shouye.png") no-repeat center/100%;
 }
@@ -80,6 +83,10 @@
 .ui-icon-del {
     background: url("../img/icon/shanchu.png") no-repeat center/100%;
 }
+.ui-icon-cancel {
+    background: url("../img/icon/jianshao.png") no-repeat center/100%;
+}
+
 .ui-tips{
     text-align: center;
 }
@@ -106,7 +113,7 @@ span {
 }
 .ui-bar{
     display: flex;
-    justify-content: space-between;
+    justify-content:space-between;
 }
 /*  */
 .ui-box {
@@ -168,8 +175,8 @@ span {
 }
 button{
     border: 1px solid #666666;
-    background: #EEEEEE;
-    border-radius: 7px;
+    background: #f8ffff;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
 }
@@ -178,7 +185,7 @@ button{
     height: 80px;
     line-height: 80px;
     font-size: 40px;
-    margin-top: 5vh;
+    margin: 5vh 3vw;
 }
 .ui-button-ok{
     width: 150px;

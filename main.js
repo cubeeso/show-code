@@ -14,14 +14,12 @@ const App = {
                 <Tips ></Tips>
             </div>
             <div class="content ui-home" v-show="!isLogin">
-                    <LoginBox><h1>欢迎登陆</h1></LoginBox>
+                    <LoginBox><h1>次元门</h1></LoginBox>
              </div>
-             <transition name="fade">
-                <div class="content ui-content" v-show="isLogin">
-               <DemoBox></DemoBox>
+                <div class="content ui-content" id="content" v-show="isLogin">
+                    <h1>欢迎进入次元世界</h1>
                 <!-- 路由出口 <router-view></router-view>  渲染在这里 -->
                 </div>
-            </transition>
             <div class="foot"> 
                 <span class="ui-help"></span>
             </div>
@@ -31,7 +29,6 @@ const App = {
     },
     mounted() { //虚拟模板渲染挂载成功后执行
         Store.saveSession();
-        // this.destroySession();
     },
     components: { //引用的组件
         Tips,
