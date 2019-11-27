@@ -4,10 +4,12 @@ const store = {
     debug:true,
     state:{
         isLogin:Storage.getCache("isLogin")||false,//登陆状态
+        isRegist:false,//登陆状态
         items: Storage.getCache("dataList") || [],//表表数据
         isToast:false,//轻提示
         isMenuShow:false,//菜单
         isAlert:false,//弹窗
+        isConfirm:false,//弹窗
         isBub:false,//气泡
         toastMsg:"",//轻提示内容
         alertMsg:"",//弹窗内容
@@ -22,6 +24,9 @@ const store = {
         if(this.debug)console.log("setLoginAction trigger with",newValue)
         this.state.isLogin = newValue;
         this.destroySession();//定时自动销毁缓存
+    },
+    setRegist(newValue){ //设置注册状态
+        this.state.isRegist = newValue;
     },
     switchMenu(swi){ //菜单开关
         swi != undefined?this.state.isMenuShow = swi:this.state.isMenuShow = !this.state.isMenuShow;
@@ -59,8 +64,13 @@ const store = {
         this.state.alertMsg = msg;
         this.state.isAlert = true; //打开提示窗
     },
+    showConfirm(msg) {//打开弹框
+        this.state.alertMsg = msg;
+        this.state.isConfirm = true; //打开提示窗
+    },
     closeAlert(){//关闭弹框
         this.state.isAlert = false; //打开提示窗
+        this.state.isConfirm = false; //关闭提示窗
         this.state.alertMsg = "";
     },
     destroySession() {//销毁session

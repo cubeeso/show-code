@@ -154,11 +154,13 @@ const Tips = {
             <transition name="fade">
              <div class="ui-toast" v-show="isToast" >{{toastMsg}}</div>
             </transition>
-            <div class="ui-boxbg" v-show="isAlert"  > </div>
+            <div class="ui-boxbg" v-show="isAlert||isConfirm"  > </div>
             <transition name="show">
-                <div class="ui-box ui-alert" v-show="isAlert" >
+                <div class="ui-box ui-alert" v-show="isAlert||isConfirm" >
                 <p class="ui-msg">{{alertMsg}}</p>
-                <p><button v-focus class="ui-button-ok"  @click="closeAlert" @keyup.enter="closeAlert">确定</button></p>       
+                <p><button v-focus class="ui-button-ok"  @click="closeAlert" @keyup.enter="closeAlert">确定</button>  
+                            <button  class="ui-button-ok" v-show="isConfirm"  @click="confirmCancel" >取消</button>   
+                </p>  
                 </div>
             </transition>
             <transition name="show">
@@ -173,6 +175,7 @@ const Tips = {
     computed: {
         isToast:()=>Store.state.isToast,
         isAlert:()=>Store.state.isAlert,
+        isConfirm:()=>Store.state.isConfirm,
         isBub:()=>Store.state.isBub,
         toastMsg:()=>Store.state.toastMsg,
         alertMsg:()=>Store.state.alertMsg,
@@ -211,12 +214,20 @@ const Tips = {
             if(this.alertMsg=="登陆成功"){
                 Store.setLoginAction(true);//更改登录状态
             }
+            if(this.alertMsg=="确定注销?"){
+                Store.setLoginAction(false);//更改登录状态
+            }
+            Store.closeAlert();
+            
+        },
+        confirmCancel(){
             Store.closeAlert();
         },
         loginCancel(){
+            Store.showConfirm("确定注销?");
             Store.closeBuble();
             Store.switchMenu(false);
-            Store.setLoginAction(false);//更改登录状态
+
         }
     },
 };
@@ -226,13 +237,13 @@ const LoginBox = {
     template:/*html*/`
         <div class="ui-input">
             <slot v-if="!isRegist"></slot>
-            <h1 v-show="isRegist">闯入次元</h1>
+            <h1 v-show="isRegist">注册身份</h1>
             <input type="text" autofocus placeholder="用户名" v-model="username"/>
             <input type="password" placeholder="密码" v-model="password" @keyup.enter="checkAuth"/>
             <input type="password" placeholder="确认密码" v-show="isRegist" v-model="repassword" @keyup.enter="checkAuth"/>
             <div >
                 <button class="ui-button" v-show="!isRegist" @click="checkAuth">登陆</button>
-                <button class="ui-button" @click="isRegist?regist():isRegist=true">注册</button>
+                <button class="ui-button" @click="regist">注册</button>
             </div>
            
         </div>
@@ -241,9 +252,11 @@ const LoginBox = {
         return {
             username:"",
             password:"",
-            isRegist:false,
             repassword:"",
         }
+    },
+    computed: {
+        isRegist:()=>Store.state.isRegist
     },
     methods: {
         checkAuth(){
@@ -257,6 +270,10 @@ const LoginBox = {
             }
         },
         regist(){
+            if(!this.isRegist){
+                    Store.setRegist(true);
+                    return;
+            }
             if(!this.username||!this.password||!this.repassword){
                 Store.showToast("用户名密码不能为空");
             }else if(this.password!==this.repassword){
@@ -264,7 +281,7 @@ const LoginBox = {
             }else{
                 Store.addUser(this.username+"|"+this.password);
                 Store.showAlert("注册成功!");
-                this.isRegist = false;
+                Store.setRegist(false);;
             }
             
         }
