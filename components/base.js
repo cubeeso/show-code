@@ -1,33 +1,33 @@
 import Store from "../stateManage/Store.js";
 //基础输入组件
 const BaseInput = {
-    template: /*html*/ `
+  template: /*html*/ `
       <div class="ui-input" >
             <input placeholder="请输入" autofocus  v-model="it" @keyup.enter="put" />
     </div>`,
-    data() {
-        return {
-            it: "",
-        };
-    },
-    computed: {
-        items:()=>Store.state.items
-    },
-    methods:{
-        put(el){
-            if (Store.state.items.includes(this.it)) {
-                Store.showAlert("数据已经存在");
-                return;
-            }
-            el.target.value="";
-            Store.putItem(this.it);
-            Store.showToast("添加成功");
-        }
+  data() {
+    return {
+      it: ""
+    };
+  },
+  computed: {
+    items: () => Store.state.items
+  },
+  methods: {
+    put(el) {
+      if (Store.state.items.includes(this.it)) {
+        Store.showAlert("数据已经存在");
+        return;
+      }
+      el.target.value = "";
+      Store.putItem(this.it);
+      Store.showToast("添加成功");
     }
+  }
 };
 //基础list组件
 const BaseList = {
-    template: /*html*/ `
+  template: /*html*/ `
         <div class="ui-list">
              <p v-for="(item,index) in items" :key="index" >
                 <span>{{item}}</span>
@@ -35,53 +35,53 @@ const BaseList = {
                 <span class="ui-icon ui-icon-del" @click="remove(index)"></span>
                </p>
          </div >`,
-    computed: {
-        items:()=>Store.state.items
+  computed: {
+    items: () => Store.state.items
+  },
+  methods: {
+    copy(item) {
+      Store.copyItem(item);
+      Store.showToast("复制成功");
     },
-    methods:{
-        copy(item){
-            Store.copyItem(item);
-            Store.showToast("复制成功");
-        },
-        remove(index){
-            Store.removeItem(index);
-            Store.showToast("删除成功");
-        }
+    remove(index) {
+      Store.removeItem(index);
+      Store.showToast("删除成功");
     }
+  }
 };
 
 //组合功能
 const DemoBox = {
-    template:/*html*/`
+  template: /*html*/ `
         <div>
             <h1>key in some thing</h1>
             <BaseInput ></BaseInput>
             <BaseList  ></BaseList>
         </div>
     `,
-    components:{
-        BaseInput,
-        BaseList
-    }
+  components: {
+    BaseInput,
+    BaseList
+  }
 };
 const routes = {
-    "/":DemoBox,
+  "/": DemoBox
 };
 const router = {
-    el:"#content",
-    data:{
-        path:window.location.pathname
-    },
-    computed: {
-        toPath(){
-            return routes[this.path]||NotFound
-        }
-    },
-    render:(h)=>h(this.toPath)
-}
+  el: "#content",
+  data: {
+    path: window.location.pathname
+  },
+  computed: {
+    toPath() {
+      return routes[this.path] || NotFound;
+    }
+  },
+  render: h => h(this.toPath)
+};
 //菜单框
 const MenuBox = {
-    template: /*html*/ `
+  template: /*html*/ `
         <div>
            <div class="ui-boxbg" v-show="isMenuShow"  @click = "closeMenu" > </div>
         <transition name="slide">
@@ -91,65 +91,83 @@ const MenuBox = {
         </transition>
         </div>
     `,
-    data(){
-        return {
-            menuData:[{
-                id:"0",
-                "menuName":"测试菜单"
-            },{
-                id:"1",
-                "menuName":"测试菜单2"
-            },{
-                id:"2",
-                "menuName":"测试菜单3"
-            },{
-                id:"3",
-                "menuName":"测试菜单4"
-            },],
-        }
-    },
-    computed: {
-        isMenuShow(){
-            return Store.state.isMenuShow
-        }
-    },
-    methods:{
-        closeMenu(){
-            Store.switchMenu(false);
+  data() {
+    return {
+      menuData: [{
+          id: "0",
+          menuName: "测试菜单1"
         },
-        toPage(i){
-            //this.$parent.showAlert(this.menuData[i].menuName);
+        {
+          id: "1",
+          menuName: "测试菜单2"
+        },
+        {
+          id: "2",
+          menuName: "测试菜单3"
+        },
+        {
+          id: "3",
+          menuName: "测试菜单4"
         }
+      ]
+    };
+  },
+  computed: {
+    isMenuShow() {
+      return Store.state.isMenuShow;
     }
+  },
+  methods: {
+    closeMenu() {
+      Store.switchMenu(false);
+    },
+    toPage(i) {
+      new Vue(DemoBox).$mount("#content");
+    }
+  }
 };
 //标题栏
 const TitleBar = {
-    template:/*html*/`
-        <div>
+  template: /*html*/ `
+        <div >
             <div class="ui-bar">
                  <span title="信号" class="ui-icon ui-icon-wifi" ></span>
                 <span title="菜单" class="ui-icon ui-icon-menu" @click="showMenu"  v-show="isLogin"></span>
                 <span title="更多" class="ui-icon ui-icon-more" @click="showBuble" v-show="isLogin" ></span>
             </div>
-            <MenuBox></MenuBox>
+            <MenuBox v-dom></MenuBox>
         </div>
     `,
-    props:["isLogin"],
-    methods: {
-       showBuble(){//打开气泡
-             Store.showBuble();
-       },
-       showMenu(){
-            Store.switchMenu();
-       }
+  props: ["isLogin"],
+  methods: {
+    showBuble() {
+      //打开气泡
+      Store.showBuble();
     },
-    components:{
-        MenuBox
+    showMenu() {
+      Store.switchMenu();
+    },
+    myalert(msg){
+      alert(msg);
     }
+  },
+  components: {
+    MenuBox
+  },
+  directives:{
+    dom:{
+      inserted(el,binding,vnode){
+        let _this = vnode.context;
+        el.onclick=()=>{
+          _this.myalert("3434");
+        }
+      }
+    }
+  }
 };
 //提示组件
 const Tips = {
-    template:/*html*/ `
+  template: /*html*/ `
         <div class="ui-tips">
             <transition name="fade">
              <div class="ui-toast" v-show="isToast" >{{toastMsg}}</div>
@@ -171,70 +189,68 @@ const Tips = {
                 </div>
             </transition>
         </div>`,
-    //props: ["conf"]
-    computed: {
-        isToast:()=>Store.state.isToast,
-        isAlert:()=>Store.state.isAlert,
-        isConfirm:()=>Store.state.isConfirm,
-        isBub:()=>Store.state.isBub,
-        toastMsg:()=>Store.state.toastMsg,
-        alertMsg:()=>Store.state.alertMsg,
+  //props: ["conf"]
+  computed: {
+    isToast: () => Store.state.isToast,
+    isAlert: () => Store.state.isAlert,
+    isConfirm: () => Store.state.isConfirm,
+    isBub: () => Store.state.isBub,
+    toastMsg: () => Store.state.toastMsg,
+    alertMsg: () => Store.state.alertMsg
+  },
+  directives: {
+    focus: {
+      update(el) {
+        el.focus(); //等同于autofocus    可兼容苹果浏览器是无效
+      }
     },
-    directives: {
-        focus: {
-            update(el) {
-                el.focus(); //等同于autofocus    可兼容苹果浏览器是无效
-            }
-        }
+  },
+  methods: {
+    copyAll() {
+      if (Store.state.items.length == 0) {
+        Store.showAlert("没有数据");
+        return;
+      }
+      if (Store.state.items.length > 2000) {
+        Store.showAlert("缓存数据过大,无法复制");
+        return;
+      }
+      Store.copyAllItem();
+      Store.closeBuble();
+      Store.showAlert("复制缓存成功");
     },
-    methods: {
-        copyAll(){
-            if (Store.state.items.length == 0) {
-                Store.showAlert("没有数据");
-                return;
-            }
-            if (Store.state.items.length > 2000) {
-                Store.showAlert("缓存数据过大,无法复制");
-                return;
-            }
-            Store.copyAllItem();
-            Store.closeBuble();
-            Store.showAlert("复制缓存成功");
-        },
-        removeAll(){
-            if (Store.state.items.length == 0) {
-                Store.showAlert("没有数据");
-                return;
-            }
-            Store.removeAllItem();
-            Store.closeBuble();
-            Store.showAlert("清空缓存成功");
-        },
-        closeAlert(){
-            if(this.alertMsg=="登陆成功"){
-                Store.setLoginAction(true);//更改登录状态
-            }
-            if(this.alertMsg=="确定注销?"){
-                Store.setLoginAction(false);//更改登录状态
-            }
-            Store.closeAlert();
-            
-        },
-        confirmCancel(){
-            Store.closeAlert();
-        },
-        loginCancel(){
-            Store.showConfirm("确定注销?");
-            Store.closeBuble();
-            Store.switchMenu(false);
-
-        }
+    removeAll() {
+      if (Store.state.items.length == 0) {
+        Store.showAlert("没有数据");
+        return;
+      }
+      Store.removeAllItem();
+      Store.closeBuble();
+      Store.showAlert("清空缓存成功");
     },
+    closeAlert() {
+      if (this.alertMsg == "登陆成功") {
+        Store.setLoginAction(true); //更改登录状态
+      }
+      if (this.alertMsg == "确定注销?") {
+        Store.setLoginAction(false); //更改登录状态
+      }
+      Store.closeAlert();
+    },
+    confirmCancel() {
+      Store.closeAlert();
+    },
+    loginCancel() {
+      Store.showConfirm("确定注销?");
+      Store.closeBuble();
+      Store.switchMenu(false);
+    }
+  }
 };
 
 //登陆框
 const LoginBox = {
-    template:/*html*/`
+  template: /*html*/ `
         <div class="ui-input">
             <slot v-if="!isRegist"></slot>
             <h1 v-show="isRegist">注册身份</h1>
@@ -248,49 +264,54 @@ const LoginBox = {
            
         </div>
     `,
-    data(){
-        return {
-            username:"",
-            password:"",
-            repassword:"",
+  data() {
+    return {
+      username: "",
+      password: "",
+      repassword: ""
+    };
+  },
+  computed: {
+    isRegist: () => Store.state.isRegist
+  },
+  methods: {
+    checkAuth() {
+      if (this.isRegist) {
+        return;
+      }
+      if (Store.state.userData.includes(this.username + "|" + this.password)) {
+        Store.showAlert("登陆成功");
+      } else {
+        Store.showAlert("用户名密码错误");
+      }
+    },
+    regist() {
+      if (!this.isRegist) {
+        Store.setRegist(true);
+        return;
+      }
+      if (!this.username || !this.password || !this.repassword) {
+        Store.showToast("用户名密码不能为空");
+      } else if (this.password !== this.repassword) {
+        Store.showToast("两次密码不相同");
+      } else {
+        for (let n of Store.state.userData) {
+          if (n.split("|")[0] === this.username) {
+            Store.showAlert("账户[" + this.username + "]已存在");
+            return;
+          }
         }
-    },
-    computed: {
-        isRegist:()=>Store.state.isRegist
-    },
-    methods: {
-        checkAuth(){
-            if(this.isRegist){
-                return;
-            }
-            if(Store.state.userData.includes(this.username+"|"+this.password)){
-                Store.showAlert("登陆成功");
-            }else{
-                Store.showAlert("用户名密码错误");
-            }
-        },
-        regist(){
-            if(!this.isRegist){
-                    Store.setRegist(true);
-                    return;
-            }
-            if(!this.username||!this.password||!this.repassword){
-                Store.showToast("用户名密码不能为空");
-            }else if(this.password!==this.repassword){
-                Store.showToast("两次密码不相同");
-            }else{
-                Store.addUser(this.username+"|"+this.password);
-                Store.showAlert("注册成功!");
-                Store.setRegist(false);;
-            }
-            
-        }
-    },
+        Store.addUser(this.username + "|" + this.password);
+        Store.showAlert("注册成功!");
+        Store.setRegist(false);
+      }
+    }
+  }
 };
 
 export {
-    Tips,
-    TitleBar,
-    LoginBox,
-    DemoBox
-}
+  Tips,
+  TitleBar,
+  LoginBox,
+  DemoBox
+};

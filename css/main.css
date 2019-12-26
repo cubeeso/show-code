@@ -2,7 +2,12 @@
     display: flex;
     flex-flow: column;
     height: 100vh;
-    background: url("../img/6395566594d2d761ba04f0c74fa4bd4b.jpg") center/100%;
+    background: url("../img/96239ffb8a149c0c6c53c24230d74e6c.jpg") center/100%;
+}
+@media screen and (min-width: 1000px) {
+    #app {
+        background: url("../img/cf620101eaf0e63e0973a6cfc52228f9.jpg") center/100%;
+    }
 }
 
 #app .head {
